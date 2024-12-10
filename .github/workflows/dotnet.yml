@@ -22,24 +22,20 @@ jobs:
       with:
         dotnet-version: 6.0.x # 支持 netstandard2.0
 
-    # 进入 websocket-sharp 目录
-    - name: Navigate to project directory
-      run: cd websocket-sharp
-
     # 恢复依赖
     - name: Restore dependencies
-      run: dotnet restore websocket-sharp.csproj
+      run: dotnet restore websocket-sharp/websocket-sharp.csproj
 
     # 读取版本号
     - name: Read project version
       id: get-version
       run: |
-        VERSION=$(grep -oP '(?<=<Version>).*?(?=</Version>)' websocket-sharp.csproj)
+        VERSION=$(grep -oP '(?<=<Version>).*?(?=</Version>)' websocket-sharp/websocket-sharp.csproj)
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     # 构建项目
     - name: Build project
-      run: dotnet build websocket-sharp.csproj --no-restore --configuration Release
+      run: dotnet build websocket-sharp/websocket-sharp.csproj --no-restore --configuration Release
 
     # 运行测试（如果有测试项目）
     - name: Run tests
@@ -47,7 +43,7 @@ jobs:
 
     # 打包为 nupkg
     - name: Pack nupkg
-      run: dotnet pack websocket-sharp.csproj --no-build --configuration Release -o ./nupkgs
+      run: dotnet pack websocket-sharp/websocket-sharp.csproj --no-build --configuration Release -o ./nupkgs
 
     # 上传到 GitHub Releases
     - name: Upload to GitHub Releases
