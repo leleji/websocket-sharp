@@ -27,8 +27,8 @@ jobs:
       run: |
         echo "Listing current directory:"
         ls -al
-        echo "Navigating to project directory if needed..."
-        cd websocket-sharp  # 如果 websocket-sharp.csproj 在子目录中，请替换为正确路径
+        echo "Navigating to the websocket-sharp directory..."
+        cd websocket-sharp # 进入到包含 .csproj 文件的目录
 
     # 恢复依赖
     - name: Restore dependencies
