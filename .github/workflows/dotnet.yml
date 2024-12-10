@@ -20,7 +20,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x # 支持 netstandard2.0
+        dotnet-version: 6.0.x
 
     # 恢复依赖
     - name: Restore dependencies
@@ -57,7 +57,5 @@ jobs:
         prerelease: false
 
     # 发布到 NuGet
-    - name: Publish to NuGet
-      uses: nuget/setup-nuget@v3
     - name: Push to NuGet
       run: dotnet nuget push ./nupkgs/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
