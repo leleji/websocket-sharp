@@ -20,11 +20,19 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 6.0.x # 支持 netstandard2.0
+
+    # 确保定位到项目目录
+    - name: Locate project
+      run: |
+        echo "Listing current directory:"
+        ls -al
+        echo "Navigating to project directory if needed..."
+        cd websocket-sharp  # 如果 websocket-sharp.csproj 在子目录中，请替换为正确路径
 
     # 恢复依赖
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore websocket-sharp.csproj
 
     # 读取版本号
     - name: Read project version
@@ -35,15 +43,15 @@ jobs:
 
     # 构建项目
     - name: Build project
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build websocket-sharp.csproj --no-restore --configuration Release
 
-    # 运行测试
+    # 运行测试（如果有测试项目）
     - name: Run tests
       run: dotnet test --no-build --verbosity normal
 
     # 打包为 nupkg
     - name: Pack nupkg
-      run: dotnet pack --no-build --configuration Release -o ./nupkgs
+      run: dotnet pack websocket-sharp.csproj --no-build --configuration Release -o ./nupkgs
 
     # 上传到 GitHub Releases
     - name: Upload to GitHub Releases
