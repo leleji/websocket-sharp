@@ -22,13 +22,9 @@ jobs:
       with:
         dotnet-version: 6.0.x # 支持 netstandard2.0
 
-    # 确保定位到项目目录
-    - name: Locate project
-      run: |
-        echo "Listing current directory:"
-        ls -al
-        echo "Navigating to the websocket-sharp directory..."
-        cd websocket-sharp # 进入到包含 .csproj 文件的目录
+    # 进入 websocket-sharp 目录
+    - name: Navigate to project directory
+      run: cd websocket-sharp
 
     # 恢复依赖
     - name: Restore dependencies
