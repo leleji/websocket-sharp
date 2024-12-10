@@ -1,0 +1,63 @@
+name: .NET Build and Release
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 检出代码
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 设置 .NET 环境
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x # 支持 netstandard2.0
+
+    # 恢复依赖
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # 读取版本号
+    - name: Read project version
+      id: get-version
+      run: |
+        VERSION=$(grep -oP '(?<=<Version>).*?(?=</Version>)' websocket-sharp.csproj)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    # 构建项目
+    - name: Build project
+      run: dotnet build --no-restore --configuration Release
+
+    # 运行测试
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal
+
+    # 打包为 nupkg
+    - name: Pack nupkg
+      run: dotnet pack --no-build --configuration Release -o ./nupkgs
+
+    # 上传到 GitHub Releases
+    - name: Upload to GitHub Releases
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: ./nupkgs/*.nupkg
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: v${{ env.VERSION }}
+        name: Release v${{ env.VERSION }}
+        draft: false
+        prerelease: false
+
+    # 发布到 NuGet
+    - name: Publish to NuGet
+      uses: nuget/setup-nuget@v3
+    - name: Push to NuGet
+      run: dotnet nuget push ./nupkgs/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
