@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     public ClientSslConfiguration ()
     {
-      _enabledSslProtocols = SslProtocols.Default;
+      _enabledSslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
     }
 
     /// <summary>
@@ -77,8 +77,8 @@ namespace WebSocketSharp.Net
     public ClientSslConfiguration (string targetHost)
     {
       _targetHost = targetHost;
-      _enabledSslProtocols = SslProtocols.Default;
-    }
+      _enabledSslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12;
+        }
 
     /// <summary>
     /// Copies the parameters from the specified <paramref name="configuration"/> to
